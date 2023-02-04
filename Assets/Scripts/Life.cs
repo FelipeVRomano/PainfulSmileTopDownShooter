@@ -4,7 +4,15 @@ using UnityEngine;
 
 public class Life : MonoBehaviour
 {
+    public enum CharacterType
+    {
+        EnemyChaser,
+        EnemyShooter,
+        Player,
+    }
+
     [SerializeField] private int _life;
+    CharacterType _characterType;
 
     public void TakeDamage()
     {
@@ -12,8 +20,17 @@ public class Life : MonoBehaviour
 
         if(_life <= 0)
         {
-            Destroy(gameObject);
+            switch(_characterType)
+            {
+                case CharacterType.EnemyChaser:
+                    FindObjectOfType<BulletManager>().desactiveEnemyChaser.Add(gameObject);
+                    break;
+                case CharacterType.EnemyShooter:
+                    FindObjectOfType<BulletManager>().desactiveEnemyChaser.Add(gameObject);
+                    break;
+                case CharacterType.Player:
+                    break;
+            }
         }
     }
-
 }

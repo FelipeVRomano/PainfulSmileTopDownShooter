@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class EnemyMovement : MonoBehaviour
 {
-    private Pathfinding _pathfinding;
-    private Vector3 _pathTarget;
-    private Transform _player;
+    enum EnemyType
+    {
+        Chaser, 
+        Shooter
+    }
 
     [Header("ENEMY CONTROLLER")]
+    [SerializeField] private EnemyType _enemyType;
     [Range(.5f, 5)]
     [SerializeField] private float _movementSpeed;
     [Range(.5f, 5)]
@@ -17,6 +20,9 @@ public class EnemyMovement : MonoBehaviour
     [SerializeField] private float _stopDistance = 1;
 
     private Vector3 _moveForward;
+    private Pathfinding _pathfinding;
+    private Vector3 _pathTarget;
+    private Transform _player;
 
     void Awake()
     {
@@ -68,6 +74,27 @@ public class EnemyMovement : MonoBehaviour
         Vector3 newPosition = transform.localPosition + moveEnemy;
 
         transform.localPosition = newPosition;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Life damageable = collision.gameObject.GetComponent<Life>();
+        if (damageable != null)
+        {
+            damageable.TakeDamage();
+            DisableEnemy();
+            return;
+        }
+    }
+
+    void DisableEnemy()
+    {
+        if (_enemyType == EnemyType.Chaser)
+            FindObjectOfType<BulletManager>().desactiveEnemyChaser.Add(gameObject);
+        else if(_enemyType == EnemyType.Shooter)
+            FindObjectOfType<BulletManager>().desactiveEnemyShooter.Add(gameObject);
+
+        gameObject.SetActive(false);
     }
 }
 

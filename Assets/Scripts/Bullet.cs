@@ -53,7 +53,19 @@ public class Bullet : MonoBehaviour
     void DisableBullet()
     {
         _lifeTimeBase = _lifeTime;
-        _bulletManager.desactiveBullets.Add(this);
+
+        switch(gameObject.tag)
+        {
+            case "BulletEnemy":
+                _bulletManager.desactiveEnemyBullets.Add(this);
+                break;
+            case "BulletPlayer":
+                _bulletManager.desactivePlayerBullets.Add(this);
+                break;
+            default:
+                Debug.LogError("NOT ASSIGNED BULLET TAG");
+                break;
+        }
        gameObject.SetActive(false);
     }
 }

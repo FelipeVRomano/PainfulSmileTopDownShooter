@@ -64,7 +64,7 @@ public class ShooterManager : MonoBehaviour
     private void FrontalShot()
     {
         _cooldownShotFrontalBase = _cooldownShotFrontal;
-        _bulletManager.DoShoot(_frontalShoot.position, transform.rotation);      
+        _bulletManager.DoShootPlayer(_frontalShoot.position, transform.rotation);      
     }
 
     private void SideComboShot()
@@ -72,7 +72,7 @@ public class ShooterManager : MonoBehaviour
         _cooldownComboSideBase = _cooldownComboSide;
         for (int i = 0; i < _sideShoot.Count; i++)
         {
-            _bulletManager.DoShoot(_sideShoot[i].position, _sideShoot[i].rotation);
+            _bulletManager.DoShootPlayer(_sideShoot[i].position, _sideShoot[i].rotation);
         }
     }
 }
