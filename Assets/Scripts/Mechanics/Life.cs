@@ -23,10 +23,10 @@ public class Life : MonoBehaviour
             switch(_characterType)
             {
                 case CharacterType.EnemyChaser:
-                    FindObjectOfType<BulletManager>().desactiveEnemyChaser.Add(gameObject);
+                    FindObjectOfType<PoolManager>().desactiveEnemyChaser.Add(gameObject);
                     break;
                 case CharacterType.EnemyShooter:
-                    FindObjectOfType<BulletManager>().desactiveEnemyChaser.Add(gameObject);
+                    FindObjectOfType<PoolManager>().desactiveEnemyChaser.Add(gameObject);
                     break;
                 case CharacterType.Player:
                     break;

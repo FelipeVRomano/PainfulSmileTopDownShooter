@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BulletManager : MonoBehaviour
+public class PoolManager : MonoBehaviour
 {
     public List<Bullet> allPlayerBullets;
     public List<Bullet> desactivePlayerBullets;
@@ -18,10 +18,13 @@ public class BulletManager : MonoBehaviour
     public List<GameObject> desactiveEnemyShooter;
 
     [SerializeField] private int _maxBulletsPool;
+    [SerializeField] private int _maxEnemiesPool;
     [SerializeField] Bullet _bulletPlayerPrefab;
     [SerializeField] Bullet _bulletEnemyPrefab;
     [SerializeField] GameObject _enemyChaserPrefab;
     [SerializeField] GameObject _enemyShooterPrefab;
+    [SerializeField] GameObject _parentEnemyPool;
+    [SerializeField] GameObject _parentEnemyBulletsPool;
 
     public void DoShootPlayer(Vector3 position, Quaternion rotation)
     {
@@ -44,9 +47,9 @@ public class BulletManager : MonoBehaviour
 
     public void DoShootEnemy(Vector3 position, Quaternion rotation)
     {
-        if (allPlayerBullets.Count < _maxBulletsPool)
+        if (allEnemyBullets.Count < _maxBulletsPool)
         {
-            Bullet bullet = Instantiate(_bulletEnemyPrefab, position, rotation, transform);
+            Bullet bullet = Instantiate(_bulletEnemyPrefab, position, rotation, _parentEnemyBulletsPool.transform);
             bullet.Setup(this);
             allEnemyBullets.Add(bullet);
         }
@@ -63,18 +66,15 @@ public class BulletManager : MonoBehaviour
 
     public void DoEnemySpawn(Vector3 position, Quaternion rotation, string enemyType)
     {
-        if (allPlayerBullets.Count < _maxBulletsPool)
+        if (enemyType == "Chaser" && allEnemiesChaser.Count < _maxEnemiesPool)
         {
-            if (enemyType == "Chaser")
-            {
-                GameObject newEnemyChaser = Instantiate(_enemyChaserPrefab, position, rotation, transform);
-                allEnemiesChaser.Add(newEnemyChaser);
-            }
-            else if (enemyType == "Shooter")
-            {
-                GameObject newEnemyShooter = Instantiate(_enemyShooterPrefab, position, rotation, transform);
-                allEnemiesShooter.Add(newEnemyShooter);
-            }
+            GameObject newEnemyChaser = Instantiate(_enemyChaserPrefab, position, rotation, _parentEnemyPool.transform);
+            allEnemiesChaser.Add(newEnemyChaser);
+        }
+        else if (enemyType == "Shooter" && allEnemiesShooter.Count < _maxEnemiesPool)
+        {
+            GameObject newEnemyShooter = Instantiate(_enemyShooterPrefab, position, rotation, _parentEnemyPool.transform);
+            allEnemiesShooter.Add(newEnemyShooter);
         }
         else
         {

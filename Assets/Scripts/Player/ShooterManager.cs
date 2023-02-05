@@ -12,11 +12,11 @@ public class ShooterManager : MonoBehaviour
 
     private float _cooldownComboSideBase;
     private float _cooldownShotFrontalBase;
-    private BulletManager _bulletManager;
+    private PoolManager _bulletManager;
     
     private void Start()
     {
-        _bulletManager = FindObjectOfType<BulletManager>();
+        _bulletManager = FindObjectOfType<PoolManager>();
     }
 
     private void Update()

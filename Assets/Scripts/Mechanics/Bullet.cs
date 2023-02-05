@@ -9,9 +9,9 @@ public class Bullet : MonoBehaviour
     [SerializeField] float _lifeTime = 5;
 
     private float _lifeTimeBase;
-    private BulletManager _bulletManager;
+    private PoolManager _bulletManager;
 
-    public void Setup(BulletManager bulletManager)
+    public void Setup(PoolManager bulletManager)
     {
         _bulletManager = bulletManager;
         _lifeTimeBase = _lifeTime;

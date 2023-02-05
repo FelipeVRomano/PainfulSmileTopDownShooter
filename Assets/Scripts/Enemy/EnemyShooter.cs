@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,29 +7,38 @@ public class EnemyShooter : MonoBehaviour
 {
     [SerializeField] Transform _frontalShoot;
     [SerializeField] float _cooldownShotFrontal;
-    private float _cooldownShotFrontalBase;
-    private BulletManager _bulletManager;
-    Transform _playerPosition;
+    [SerializeField] float _distanceToShoot;
 
+    private float _cooldownShotFrontalBase;
+    private PoolManager _bulletManager;
+    Transform _playerPosition;
+    EnemyMovement _enemyMovement;
     private void Start()
     {
-        _bulletManager = FindObjectOfType<BulletManager>();
+        _bulletManager = FindObjectOfType<PoolManager>();
         _playerPosition = FindObjectOfType<Player>().transform;
+        _enemyMovement = GetComponent<EnemyMovement>();
     }
 
     private void Update()
     {
         CheckCooldown();
-        _frontalShoot.up = _playerPosition.position - transform.position;
+
         if (CanShotFrontal())
         {
+            DoEnemyAim();
             FrontalShot();
         }
     }
 
+    private void DoEnemyAim()
+    {
+        _frontalShoot.up = _playerPosition.position - transform.position;
+    }
+
     bool CanShotFrontal()
     {
-        return _cooldownShotFrontalBase <= 0;
+        return _cooldownShotFrontalBase <= 0 && _enemyMovement.PlayerIsClose;
     }
 
     void CheckCooldown()

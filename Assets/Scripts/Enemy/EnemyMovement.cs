@@ -23,6 +23,9 @@ public class EnemyMovement : MonoBehaviour
     private Pathfinding _pathfinding;
     private Vector3 _pathTarget;
     private Transform _player;
+    private bool _playerIsClose;
+
+    public bool PlayerIsClose => _playerIsClose;
 
     void Awake()
     {
@@ -61,9 +64,11 @@ public class EnemyMovement : MonoBehaviour
         if (Vector3.Distance(transform.position, _player.position) > _stopDistance)
         {
             _moveForward = Vector3.up * _movementSpeed;
+            _playerIsClose = false;
         }
         else
         {
+            _playerIsClose = true;
             _moveForward = Vector3.zero * _movementSpeed;
         }
     }
@@ -90,9 +95,9 @@ public class EnemyMovement : MonoBehaviour
     void DisableEnemy()
     {
         if (_enemyType == EnemyType.Chaser)
-            FindObjectOfType<BulletManager>().desactiveEnemyChaser.Add(gameObject);
+            FindObjectOfType<PoolManager>().desactiveEnemyChaser.Add(gameObject);
         else if(_enemyType == EnemyType.Shooter)
-            FindObjectOfType<BulletManager>().desactiveEnemyShooter.Add(gameObject);
+            FindObjectOfType<PoolManager>().desactiveEnemyShooter.Add(gameObject);
 
         gameObject.SetActive(false);
     }

@@ -163,8 +163,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _enemyType: 0
-  _movementSpeed: 2.5
-  _rotateSpeed: 3
+  _movementSpeed: 1
+  _rotateSpeed: 2
   _stopDistance: 2
 --- !u!114 &8356243886261014586
 MonoBehaviour:
@@ -193,6 +193,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _frontalShoot: {fileID: 5546020719343976937}
   _cooldownShotFrontal: 3
+  _distanceToShoot: 0
 --- !u!1 &8617116032301096548
 GameObject:
   m_ObjectHideFlags: 0

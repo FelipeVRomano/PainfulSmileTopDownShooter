@@ -22,11 +22,11 @@ public class GameController : MonoBehaviour
     [SerializeField] List<Transform> _enemySpawnPosition;
 
     float _enemySpawnTimeBase;
-    BulletManager _bulletManager;
+    PoolManager _bulletManager;
 
     private void Start()
     {
-        _bulletManager = GetComponent<BulletManager>();
+        _bulletManager = GetComponent<PoolManager>();
         StartCoroutine(GameSessionRun());
     }
 
@@ -49,9 +49,13 @@ public class GameController : MonoBehaviour
 
         if (_enemySpawnTime < 0)
         {
-            _bulletManager.DoEnemySpawn(_enemySpawnPosition[CheckSpawnPositionOffCamera()].position,
-                                        _enemySpawnPosition[CheckSpawnPositionOffCamera()].rotation,
-                                        SetEnemyName());
+            int checkSpawnOffCamera = CheckSpawnPositionOffCamera();
+            string enemyName = SetEnemyName();
+
+            Debug.LogError("SPAWN POSITION: " + checkSpawnOffCamera + " : " + enemyName);
+            _bulletManager.DoEnemySpawn(_enemySpawnPosition[checkSpawnOffCamera].position,
+                                        _enemySpawnPosition[checkSpawnOffCamera].rotation,
+                                        enemyName);
 
             _enemySpawnTime = _enemySpawnTimeBase;
         }
@@ -63,12 +67,16 @@ public class GameController : MonoBehaviour
         {
             Vector3 spawnPos = Camera.main.WorldToViewportPoint(_enemySpawnPosition[i].position);
 
-            if (spawnPos.x <= 0f && spawnPos.x >= 1f && spawnPos.y <= 0f && spawnPos.y >= 1f)
+            if ((spawnPos.x <= 0f || spawnPos.x >= 1f) && (spawnPos.y <= 0f || spawnPos.y >= 1f))
             {
+                Debug.LogError("FOUND INDEX OF: " + i);
                 return i;
             }
+
+            Debug.LogError("CHECKING EVERY INDEX: " + spawnPos);
         }
 
+        Debug.LogError("NOT FOUND ANY SHIT");
         return 0;
     }
 
@@ -80,13 +88,13 @@ public class GameController : MonoBehaviour
         if (_bulletManager.allEnemiesChaser.Count < 5 || _bulletManager.desactiveEnemyChaser.Count > 0) canSpawnChaser = true;
         if (_bulletManager.allEnemiesShooter.Count < 5 || _bulletManager.desactiveEnemyShooter.Count > 0) canSpawnShooter = true;
 
-        Debug.LogError("BOOL: " + canSpawnChaser + " " + canSpawnShooter);
+        Debug.LogError("CAN SPAWN: CHASER" + canSpawnChaser + " SHOOTER " + canSpawnShooter);
 
         if (canSpawnChaser && canSpawnShooter)
         {
-            int i = UnityEngine.Random.Range(0, 1);
+            int i = UnityEngine.Random.Range(0, 2);
 
-            Debug.LogError("INDEX: " + i);
+            Debug.LogError("INDEX RANDOM: " + i);
 
             if (i == 0) return "Chaser";
             else return "Shooter";

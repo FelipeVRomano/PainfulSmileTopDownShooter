@@ -52,13 +52,25 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7508620852501327079, guid: 7cb8f4288866c5c4db908ba0e7e318de, type: 3}
+      propertyPath: _rotateSpeed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7508620852501327079, guid: 7cb8f4288866c5c4db908ba0e7e318de, type: 3}
       propertyPath: _stopDistance
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7508620852501327079, guid: 7cb8f4288866c5c4db908ba0e7e318de, type: 3}
+      propertyPath: _movementSpeed
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7508620852501327080, guid: 7cb8f4288866c5c4db908ba0e7e318de, type: 3}
       propertyPath: m_Name
       value: EnemyChaser
       objectReference: {fileID: 0}
+    - target: {fileID: 7508620852501327082, guid: 7cb8f4288866c5c4db908ba0e7e318de, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -2014665058, guid: 1e74e2bda97882e4182077267b5eba9e, type: 3}
     m_RemovedComponents:
     - {fileID: 1482332703857077270, guid: 7cb8f4288866c5c4db908ba0e7e318de, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 7cb8f4288866c5c4db908ba0e7e318de, type: 3}
