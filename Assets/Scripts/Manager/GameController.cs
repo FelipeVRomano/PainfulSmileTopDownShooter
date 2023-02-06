@@ -9,33 +9,49 @@ public class GameController : MonoBehaviour
     [SerializeField] Vector2 _mapBoundsStart;
     [SerializeField] Vector2 _mapBoundsEnd;
 
-    public Vector2 MapBoundsStart => _mapBoundsStart;
-    public Vector2 MapBoundsEnd => _mapBoundsEnd;
-
-    [Header("GAME SESSION INFO")]
-    [SerializeField] float _gameSessionTime;
+    [Header("SET TRUE TO IGNORE SAVE DATA")]
+    [SerializeField] bool _ignoreLoadData;
+    [Header("GAME SESSION INFO")] 
+    [Range(1,3)] [SerializeField] float _gameSessionTime;
 
     [Header("ENEMY MANAGER")]
-    [SerializeField] float _enemySpawnTime;
+    [Range(3, 20)] [SerializeField] float _enemySpawnTime;
     [SerializeField] GameObject _chaserEnemy;
     [SerializeField] GameObject _shooterEnemy;
     [SerializeField] List<Transform> _enemySpawnPosition;
 
-    float _enemySpawnTimeBase;
+    public Vector2 MapBoundsStart => _mapBoundsStart;
+    public Vector2 MapBoundsEnd => _mapBoundsEnd;
+
+    private float _enemySpawnTimeBase;
+    private float _gameSessionTimeBase;
     PoolManager _bulletManager;
 
     private void Start()
     {
         _bulletManager = GetComponent<PoolManager>();
+
+        if (!_ignoreLoadData)
+        {
+            LoadGameData();
+        }
+
         StartCoroutine(GameSessionRun());
+    }
+
+    private void LoadGameData()
+    {
+        _gameSessionTime = PlayerPrefs.GetInt("GameSessionTime", Mathf.RoundToInt(_gameSessionTime));
+        _enemySpawnTime = PlayerPrefs.GetInt("EnemySpawnRate", Mathf.RoundToInt(_enemySpawnTime));
     }
 
     IEnumerator GameSessionRun()
     {
         _enemySpawnTimeBase = _enemySpawnTime;
-        while (_gameSessionTime > 0)
+        _gameSessionTimeBase = _gameSessionTime * 60;
+        while (_gameSessionTimeBase > 0)
         {
-            _gameSessionTime -= Time.deltaTime;
+            _gameSessionTimeBase -= Time.deltaTime;
 
             SpawnEnemies();
             yield return null;
@@ -45,9 +61,9 @@ public class GameController : MonoBehaviour
 
     void SpawnEnemies()
     {
-        _enemySpawnTime -= Time.deltaTime;
+        _enemySpawnTimeBase -= Time.deltaTime;
 
-        if (_enemySpawnTime < 0)
+        if (_enemySpawnTimeBase < 0)
         {
             int checkSpawnOffCamera = CheckSpawnPositionOffCamera();
             string enemyName = SetEnemyName();
@@ -57,7 +73,7 @@ public class GameController : MonoBehaviour
                                         _enemySpawnPosition[checkSpawnOffCamera].rotation,
                                         enemyName);
 
-            _enemySpawnTime = _enemySpawnTimeBase;
+            _enemySpawnTimeBase = _enemySpawnTime;
         }
     }
 
