@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyMovement : MonoBehaviour
+public class EnemyMovement : MonoBehaviour, IGameOver
 {
     enum EnemyType
     {
@@ -23,22 +23,34 @@ public class EnemyMovement : MonoBehaviour
     private Pathfinding _pathfinding;
     private Vector3 _pathTarget;
     private Transform _player;
+    private GameController _gmController;
     private bool _playerIsClose;
+    private bool _gameOver;
 
     public bool PlayerIsClose => _playerIsClose;
 
     void Awake()
     {
-        _pathfinding = gameObject.GetComponent<Pathfinding>();
+        _pathfinding = GetComponent<Pathfinding>();
     }
 
     void Start()
     {
         _player = _pathfinding.TargetPos;
+        _gmController = FindObjectOfType<GameController>();
+        _gmController.GameOver += GameOver;
+    }
+
+    private void OnDestroy()
+    {
+        _gmController.GameOver -= GameOver;
     }
 
     void Update()
     {
+        if (_gameOver)
+            return;
+
         if (!HasPathToGo())
             return;
 
@@ -86,20 +98,14 @@ public class EnemyMovement : MonoBehaviour
         Life damageable = collision.gameObject.GetComponent<Life>();
         if (damageable != null)
         {
-            damageable.TakeDamage();
-            DisableEnemy();
+            damageable.TakeDamage(2);
             return;
         }
     }
 
-    void DisableEnemy()
+    public void GameOver()
     {
-        if (_enemyType == EnemyType.Chaser)
-            FindObjectOfType<PoolManager>().desactiveEnemyChaser.Add(gameObject);
-        else if(_enemyType == EnemyType.Shooter)
-            FindObjectOfType<PoolManager>().desactiveEnemyShooter.Add(gameObject);
-
-        gameObject.SetActive(false);
+        _gameOver = true;
     }
 }
 

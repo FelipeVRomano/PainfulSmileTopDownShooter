@@ -7,6 +7,7 @@ public class UIRefreshValue : MonoBehaviour
     [Header("ASSIGN UI WHICH WILL REFRESH")]
     [SerializeField] private TextMeshProUGUI _refreshText;
     [SerializeField] private Slider _slider;
+    [SerializeField] string _addComplementText;
     [Header("THIS UI NEEDS SAVE/LOAD?")]
     [SerializeField] private bool _useSaveLoad;
     [SerializeField] private string _keyToSaveLoad;
@@ -29,7 +30,7 @@ public class UIRefreshValue : MonoBehaviour
     public void RefreshTextWithValue(float value)
     {
         int valueInt = (int)value;
-        _refreshText.text = valueInt.ToString();
+        _refreshText.text = _addComplementText + valueInt.ToString();
     }
 
     public void AddValueToSave(float value)

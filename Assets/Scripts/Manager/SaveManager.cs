@@ -28,7 +28,7 @@ public class SaveManager : MonoBehaviour
     {
         if(_keyToSave.Contains(keySave))
         {
-            int indexChangeSave = keySave.IndexOf(keySave);
+            int indexChangeSave = _keyToSave.IndexOf(keySave);
 
             valueToSave[indexChangeSave].keyValue = valueSave;
             return;
@@ -50,10 +50,12 @@ public class SaveManager : MonoBehaviour
         {
             for(int i = 0; i < valueToSave.Count; i++)
             {
+                Debug.LogError("SAVING VALUE: " + valueToSave[i].keySave + " : " + valueToSave[i].keyValue);
                 SetSave(valueToSave[i].keySave, valueToSave[i].keyValue);
             }
 
             valueToSave.Clear();
+            _keyToSave.Clear();
         }
     }
     public void SetSave(string keySave, int valueSave)

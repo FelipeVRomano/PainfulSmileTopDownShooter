@@ -7,6 +7,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1156780734416837432, guid: 7cb8f4288866c5c4db908ba0e7e318de, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -1.45
+      objectReference: {fileID: 0}
     - target: {fileID: 7508620852501327077, guid: 7cb8f4288866c5c4db908ba0e7e318de, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -71,6 +75,21 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: -2014665058, guid: 1e74e2bda97882e4182077267b5eba9e, type: 3}
+    - target: {fileID: 8356243886261014586, guid: 7cb8f4288866c5c4db908ba0e7e318de, type: 3}
+      propertyPath: _lifeBarImage
+      value: 
+      objectReference: {fileID: 5583147177083973668}
     m_RemovedComponents:
     - {fileID: 1482332703857077270, guid: 7cb8f4288866c5c4db908ba0e7e318de, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 7cb8f4288866c5c4db908ba0e7e318de, type: 3}
+--- !u!114 &5583147177083973668 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2843722368436049818, guid: 7cb8f4288866c5c4db908ba0e7e318de, type: 3}
+  m_PrefabInstance: {fileID: 7641971588306708414}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

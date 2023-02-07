@@ -2,6 +2,7 @@ using System.Collections;
 using System;
 using UnityEngine;
 using System.Collections.Generic;
+using TMPro;
 
 public class GameController : MonoBehaviour
 {
@@ -20,12 +21,26 @@ public class GameController : MonoBehaviour
     [SerializeField] GameObject _shooterEnemy;
     [SerializeField] List<Transform> _enemySpawnPosition;
 
+    [Header("GAME OVER")]
+    [SerializeField] GameObject _gameOverObject;
+    [SerializeField] TextMeshProUGUI _text;
+
+    [Header("GAME UI")]
+    [SerializeField] TextMeshProUGUI _scoreTxt;
+    [SerializeField] TextMeshProUGUI _gameSessionTimeTxt;
+
     public Vector2 MapBoundsStart => _mapBoundsStart;
     public Vector2 MapBoundsEnd => _mapBoundsEnd;
+    public int PlayerScore { get; set; }
+
+    public System.Action GameOver;
 
     private float _enemySpawnTimeBase;
     private float _gameSessionTimeBase;
+    private bool _playerIsDead;
     PoolManager _bulletManager;
+
+
 
     private void Start()
     {
@@ -39,6 +54,11 @@ public class GameController : MonoBehaviour
         StartCoroutine(GameSessionRun());
     }
 
+    public void PlayerDied()
+    {
+        _playerIsDead = true;
+    }
+
     private void LoadGameData()
     {
         _gameSessionTime = PlayerPrefs.GetInt("GameSessionTime", Mathf.RoundToInt(_gameSessionTime));
@@ -47,18 +67,71 @@ public class GameController : MonoBehaviour
 
     IEnumerator GameSessionRun()
     {
-        _enemySpawnTimeBase = _enemySpawnTime;
+        _enemySpawnTimeBase = 1f;
         _gameSessionTimeBase = _gameSessionTime * 60;
         while (_gameSessionTimeBase > 0)
         {
             _gameSessionTimeBase -= Time.deltaTime;
 
             SpawnEnemies();
+            RefreshUIGame();
+
+            if(_playerIsDead)
+            {
+                DoGameOver(false);
+                yield break;
+            }
             yield return null;
         }
-        
+        DoGameOver(true);       
     }
 
+    private void RefreshUIGame()
+    {
+        _scoreTxt.text = "YOUR SCORE: " + PlayerScore.ToString();
+        int gameSessionTime = Mathf.RoundToInt(_gameSessionTimeBase);
+        _gameSessionTimeTxt.text = gameSessionTime.ToString();
+    }
+
+    public void AddScore()
+    {
+        PlayerScore += 1;
+        Debug.Log("PLAYER SCORE IS: " + PlayerScore);
+    }
+
+    private void DoGameOver(bool resultPlayerVictory)
+    {
+        GameOver?.Invoke();
+
+        if(SaveManager.Instance != null)
+        {
+            SaveManager.Instance.AddChangeKeyToSave("PlayerScore", PlayerScore);
+
+            int bestScore = PlayerPrefs.GetInt("BestPlayerScore", 0);
+
+            if(bestScore < PlayerScore)
+                SaveManager.Instance.AddChangeKeyToSave("BestPlayerScore", PlayerScore);
+
+            SaveManager.Instance.SaveGame();
+        }
+        else
+        {
+            Debug.LogWarning("Save Manager is null, enabled it to save Player score");
+        }
+
+        _gameOverObject.SetActive(true);
+
+        if (resultPlayerVictory)
+        {
+            _text.text = "YOU SURVIVED!";
+        }
+        else
+        {
+            _text.text = "YOU LOST!";
+        }
+    }
+
+    #region EnemySpawnManager
     void SpawnEnemies()
     {
         _enemySpawnTimeBase -= Time.deltaTime;
@@ -85,14 +158,11 @@ public class GameController : MonoBehaviour
 
             if ((spawnPos.x <= 0f || spawnPos.x >= 1f) && (spawnPos.y <= 0f || spawnPos.y >= 1f))
             {
-                Debug.LogError("FOUND INDEX OF: " + i);
                 return i;
             }
 
-            Debug.LogError("CHECKING EVERY INDEX: " + spawnPos);
         }
 
-        Debug.LogError("NOT FOUND ANY SHIT");
         return 0;
     }
 
@@ -104,13 +174,9 @@ public class GameController : MonoBehaviour
         if (_bulletManager.allEnemiesChaser.Count < 5 || _bulletManager.desactiveEnemyChaser.Count > 0) canSpawnChaser = true;
         if (_bulletManager.allEnemiesShooter.Count < 5 || _bulletManager.desactiveEnemyShooter.Count > 0) canSpawnShooter = true;
 
-        Debug.LogError("CAN SPAWN: CHASER" + canSpawnChaser + " SHOOTER " + canSpawnShooter);
-
         if (canSpawnChaser && canSpawnShooter)
         {
             int i = UnityEngine.Random.Range(0, 2);
-
-            Debug.LogError("INDEX RANDOM: " + i);
 
             if (i == 0) return "Chaser";
             else return "Shooter";
@@ -122,4 +188,5 @@ public class GameController : MonoBehaviour
         else
             return "";
     }
+    #endregion
 }

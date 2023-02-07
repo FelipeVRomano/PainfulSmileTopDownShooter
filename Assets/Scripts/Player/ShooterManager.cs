@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShooterManager : MonoBehaviour
+public class ShooterManager : MonoBehaviour, IGameOver
 {
     [SerializeField] Transform _frontalShoot;
     [SerializeField] List<Transform> _sideShoot;
@@ -13,14 +13,27 @@ public class ShooterManager : MonoBehaviour
     private float _cooldownComboSideBase;
     private float _cooldownShotFrontalBase;
     private PoolManager _bulletManager;
+    private GameController _gmController;
+    private bool _gameOver;
     
     private void Start()
     {
         _bulletManager = FindObjectOfType<PoolManager>();
+        _gmController = FindObjectOfType<GameController>();
+
+        _gmController.GameOver += GameOver;
+    }
+
+    private void OnDestroy()
+    {
+        _gmController.GameOver -= GameOver;
     }
 
     private void Update()
     {
+        if (_gameOver)
+            return;
+
         CheckCooldown();
         CheckPlayerInput();
     }
@@ -50,12 +63,12 @@ public class ShooterManager : MonoBehaviour
 
     void CheckPlayerInput()
     {
-        if(Input.GetKeyDown(KeyCode.F) && CanComboSideShot())
+        if(Input.GetKeyDown(KeyCode.C) && CanComboSideShot())
         {
             SideComboShot();
         }
 
-        if(Input.GetKeyDown(KeyCode.Space) && CanShotFrontal())
+        if(Input.GetKeyDown(KeyCode.V) && CanShotFrontal())
         {
             FrontalShot();
         }
@@ -74,5 +87,10 @@ public class ShooterManager : MonoBehaviour
         {
             _bulletManager.DoShootPlayer(_sideShoot[i].position, _sideShoot[i].rotation);
         }
+    }
+
+    public void GameOver()
+    {
+        _gameOver = true;
     }
 }

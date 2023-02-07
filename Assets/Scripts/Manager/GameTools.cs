@@ -5,6 +5,16 @@ using UnityEngine.SceneManagement;
 
 public class GameTools : MonoBehaviour
 {
+    private void Start()
+    {
+        //ResetPlayerPrefs();
+    }
+
+    public void ResetPlayerPrefs()
+    {
+        PlayerPrefs.DeleteAll();
+    }
+
     public void LoadScene(string nextSceneName)
     {
         SceneManager.LoadScene(nextSceneName);

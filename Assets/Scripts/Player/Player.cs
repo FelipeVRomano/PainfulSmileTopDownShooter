@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IGameOver
 {
     [Header("PLAYER SPEED")]
     [SerializeField] private float _moveSpeed;
@@ -12,16 +12,28 @@ public class Player : MonoBehaviour
     private float _moveForward, _rotatePlayer;
     [SerializeField] private Vector2 _mapLimitStart, _mapLimitEnd;
     private GameController _gmController;
+
+    bool _gameOver;
     void Start()
     {
         _gmController = FindObjectOfType<GameController>();
 
         _mapLimitStart = _gmController.MapBoundsStart;
         _mapLimitEnd = _gmController.MapBoundsEnd;
+
+        _gmController.GameOver += GameOver;
+    }
+
+    private void OnDestroy()
+    {
+        _gmController.GameOver -= GameOver;
     }
 
     void Update()
     {
+        if (_gameOver)
+            return;
+
         ReadHorizontalInput();
         ReadVerticalInput();
 
@@ -57,5 +69,20 @@ public class Player : MonoBehaviour
     {
         Vector3 rotatePlayer = _rotatePlayer * transform.forward * Time.deltaTime;
         transform.Rotate(rotatePlayer * -10);
+    }
+
+    public void GameOver()
+    {
+        _gameOver = true;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Life damageable = collision.gameObject.GetComponent<Life>();
+        if (damageable != null)
+        {
+            damageable.TakeDamage(2);
+            return;
+        }
     }
 }

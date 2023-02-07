@@ -44,7 +44,7 @@ public class Bullet : MonoBehaviour
         Life damageable = collision.GetComponent<Life>();
         if (damageable != null)
         {
-            damageable.TakeDamage();
+            damageable.TakeDamage(1);
             DisableBullet();
             return;
         }
