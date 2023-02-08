@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class EnemyShooter : MonoBehaviour, IStopAction
 {
+    [Header("ENEMY SHOOTER")]
     [SerializeField] Transform _frontalShoot;
     [SerializeField] float _cooldownShotFrontal;
-    [SerializeField] float _distanceToShoot;
 
     private PoolManager _bulletManager;
     private Transform _playerPosition;

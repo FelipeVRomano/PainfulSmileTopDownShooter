@@ -60,25 +60,31 @@ public class Life : MonoBehaviour
 
     void DoCharacterSpriteChange()
     {
-        int getCurrentIndex = _life;
+        int getCurrentValue = _life;
         int indexOfSprite = 0;
         bool needToChangeSprite = false;
 
         for(int i = 0; i < _lifeSpriteDamage.Count; i++)
         {
-            if(_lifeSpriteDamage[i].spriteLifeIndex >= getCurrentIndex)
+            if (_lifeSpriteDamage[i].spriteLifeIndex >= _life)
             {
-                if(Mathf.Min(getCurrentIndex, _lifeSpriteDamage[i].spriteLifeIndex) == _lifeSpriteDamage[i].spriteLifeIndex)
+                if(!needToChangeSprite)
                 {
-                    Debug.Log("CHANGED CURRENT NEW INDEX: " + _lifeSpriteDamage[i].spriteLifeIndex);
-                    getCurrentIndex = _lifeSpriteDamage[i].spriteLifeIndex;
+                    getCurrentValue = _lifeSpriteDamage[i].spriteLifeIndex;
                     indexOfSprite = i;
                     needToChangeSprite = true;
+                }
+                else
+                {
+                    if (Mathf.Min(getCurrentValue, _lifeSpriteDamage[i].spriteLifeIndex) == _lifeSpriteDamage[i].spriteLifeIndex)
+                    {
+                        getCurrentValue = _lifeSpriteDamage[i].spriteLifeIndex;
+                        indexOfSprite = i;
+                    }
                 }
             }
         }
 
-        Debug.Log("NEED TO CHANGE SPRITE: " + needToChangeSprite);
         if (needToChangeSprite)
         {
             _spriteRenderer.sprite = _lifeSpriteDamage[indexOfSprite].spriteLifeImage;

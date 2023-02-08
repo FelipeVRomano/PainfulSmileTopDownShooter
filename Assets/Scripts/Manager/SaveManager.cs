@@ -34,7 +34,6 @@ public class SaveManager : MonoBehaviour
             return;
         }
 
-        Debug.Log("Adding new value to save");
         Save newValueToSave = new Save();
 
         newValueToSave.keySave = keySave;
@@ -50,7 +49,6 @@ public class SaveManager : MonoBehaviour
         {
             for(int i = 0; i < valueToSave.Count; i++)
             {
-                Debug.LogError("SAVING VALUE: " + valueToSave[i].keySave + " : " + valueToSave[i].keyValue);
                 SetSave(valueToSave[i].keySave, valueToSave[i].keyValue);
             }
 

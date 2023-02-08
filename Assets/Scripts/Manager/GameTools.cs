@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class GameTools : MonoBehaviour
 {
 #if UNITY_EDITOR
+    //USE ONLY TO RESET SAVE
     //private void Start() => ResetPlayerPrefs();
 #endif
 

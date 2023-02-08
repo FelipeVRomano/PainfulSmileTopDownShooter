@@ -16,7 +16,7 @@ public class GameController : MonoBehaviour
     [Range(1,3)] [SerializeField] float _gameSessionTime;
 
     [Header("ENEMY MANAGER")]
-    [Range(3, 20)] [SerializeField] float _enemySpawnTime;
+    [Range(5, 20)] [SerializeField] float _enemySpawnTime;
     [SerializeField] GameObject _chaserEnemy;
     [SerializeField] GameObject _shooterEnemy;
     [SerializeField] List<Transform> _enemySpawnPosition;
@@ -40,7 +40,6 @@ public class GameController : MonoBehaviour
     private float _gameSessionTimeBase;
     private bool _playerIsDead;
     PoolManager _bulletManager;
-
 
     private void Awake()
     {
@@ -96,7 +95,7 @@ public class GameController : MonoBehaviour
 
     private void RefreshUIGame()
     {
-        _scoreTxt.text = "YOUR SCORE: " + PlayerScore.ToString();
+        _scoreTxt.text = "SCORE: " + PlayerScore.ToString();
         int gameSessionTime = Mathf.RoundToInt(_gameSessionTimeBase);
         _gameSessionTimeTxt.text = gameSessionTime.ToString();
     }
@@ -104,7 +103,6 @@ public class GameController : MonoBehaviour
     public void AddScore()
     {
         PlayerScore += 1;
-        Debug.Log("PLAYER SCORE IS: " + PlayerScore);
     }
 
     private void DoGameOver(bool resultPlayerVictory)
@@ -159,18 +157,8 @@ public class GameController : MonoBehaviour
 
     int CheckSpawnPositionOffCamera()
     {
-        for(int i = 0; i < _enemySpawnPosition.Count; i++)
-        {
-            Vector3 spawnPos = Camera.main.WorldToViewportPoint(_enemySpawnPosition[i].position);
-
-            if ((spawnPos.x <= 0f || spawnPos.x >= 1f) && (spawnPos.y <= 0f || spawnPos.y >= 1f))
-            {
-                return i;
-            }
-
-        }
-
-        return 0;
+        int randomIndex = UnityEngine.Random.Range(0, _enemySpawnPosition.Count);
+        return randomIndex;
     }
 
     string SetEnemyName()
