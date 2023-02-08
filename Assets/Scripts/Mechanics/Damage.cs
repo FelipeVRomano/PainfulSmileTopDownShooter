@@ -13,12 +13,24 @@ public class Damage : MonoBehaviour
     [Header("DAMAGE CONFIG")]
     [SerializeField] private int _damage;
     [SerializeField] DamageType _damageType;
+    
+    private bool _oneDamage;
+
+    private void OnEnable()
+    {
+        _oneDamage = false;
+    }
 
     void OnTriggerEnter2D(Collider2D collision)
     {
         Life damageable = collision.GetComponent<Life>();
         if (damageable != null)
         {
+            if (_oneDamage)
+                return;
+
+            _oneDamage = true;
+
             damageable.TakeDamage(_damage);
 
             if (_damageType == DamageType.Bullet)
@@ -34,6 +46,11 @@ public class Damage : MonoBehaviour
         Life damageable = collision.gameObject.GetComponent<Life>();
         if (damageable != null)
         {
+            if (_oneDamage)
+                return;
+
+            _oneDamage = true;
+
             damageable.TakeDamage(_damage);
 
             if(_damageType == DamageType.EnemyChaser)
