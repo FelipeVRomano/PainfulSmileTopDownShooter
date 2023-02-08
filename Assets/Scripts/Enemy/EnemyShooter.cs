@@ -3,31 +3,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyShooter : MonoBehaviour, IGameOver
+public class EnemyShooter : MonoBehaviour, IStopAction
 {
     [SerializeField] Transform _frontalShoot;
     [SerializeField] float _cooldownShotFrontal;
     [SerializeField] float _distanceToShoot;
 
-    private float _cooldownShotFrontalBase;
     private PoolManager _bulletManager;
-    Transform _playerPosition;
-    EnemyMovement _enemyMovement;
-    GameController _gmController;
+    private Transform _playerPosition;
+    private EnemyMovement _enemyMovement;
+    private Life _lifeManager;
+
+    private float _cooldownShotFrontalBase;
     private bool _gameOver;
+    private bool _characterIsDead;
 
     private void Start()
     {
         _bulletManager = FindObjectOfType<PoolManager>();
         _playerPosition = FindObjectOfType<Player>().transform;
         _enemyMovement = GetComponent<EnemyMovement>();
-        _gmController = FindObjectOfType<GameController>();
-        _gmController.GameOver += GameOver;
+        _lifeManager = GetComponent<Life>();
+
+        _lifeManager.CharacterDeath += CharacterDeath;
+        GameController.gmController.GameOver += GameOver;
     }
 
     private void OnDestroy()
     {
-        _gmController.GameOver -= GameOver;
+        _lifeManager.CharacterDeath -= CharacterDeath;
+        GameController.gmController.GameOver -= GameOver;
     }
 
     private void OnEnable()
@@ -37,7 +42,7 @@ public class EnemyShooter : MonoBehaviour, IGameOver
 
     private void Update()
     {
-        if (_gameOver)
+        if (_gameOver || _characterIsDead)
             return;
 
         CheckCooldown();
@@ -52,6 +57,7 @@ public class EnemyShooter : MonoBehaviour, IGameOver
     private void ResetEnemyStats()
     {
         _cooldownShotFrontalBase = _cooldownShotFrontal;
+        _characterIsDead = false;
     }
 
     private void DoEnemyAim()
@@ -83,5 +89,10 @@ public class EnemyShooter : MonoBehaviour, IGameOver
     public void GameOver()
     {
         _gameOver = true;
+    }
+
+    public void CharacterDeath()
+    {
+        _characterIsDead = true;
     }
 }

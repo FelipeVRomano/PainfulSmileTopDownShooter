@@ -34,6 +34,7 @@ public class GameController : MonoBehaviour
     public int PlayerScore { get; set; }
 
     public System.Action GameOver;
+    public static GameController gmController;
 
     private float _enemySpawnTimeBase;
     private float _gameSessionTimeBase;
@@ -41,10 +42,17 @@ public class GameController : MonoBehaviour
     PoolManager _bulletManager;
 
 
+    private void Awake()
+    {
+        if (gmController != null)
+            Destroy(gmController.gameObject);
+
+        gmController = this;
+    }
 
     private void Start()
     {
-        _bulletManager = GetComponent<PoolManager>();
+        _bulletManager = FindObjectOfType<PoolManager>();
 
         if (!_ignoreLoadData)
         {
@@ -141,7 +149,6 @@ public class GameController : MonoBehaviour
             int checkSpawnOffCamera = CheckSpawnPositionOffCamera();
             string enemyName = SetEnemyName();
 
-            Debug.LogError("SPAWN POSITION: " + checkSpawnOffCamera + " : " + enemyName);
             _bulletManager.DoEnemySpawn(_enemySpawnPosition[checkSpawnOffCamera].position,
                                         _enemySpawnPosition[checkSpawnOffCamera].rotation,
                                         enemyName);

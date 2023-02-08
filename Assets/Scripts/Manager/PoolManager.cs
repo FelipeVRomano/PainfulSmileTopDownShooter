@@ -5,32 +5,39 @@ using UnityEngine;
 
 public class PoolManager : MonoBehaviour
 {
-    public List<Bullet> allPlayerBullets;
-    public List<Bullet> desactivePlayerBullets;
-
-    public List<Bullet> allEnemyBullets;
-    public List<Bullet> desactiveEnemyBullets;
-
-    public List<GameObject> allEnemiesChaser;
-    public List<GameObject> desactiveEnemyChaser;
-    
-    public List<GameObject> allEnemiesShooter;
-    public List<GameObject> desactiveEnemyShooter;
-
-    [SerializeField] private int _maxBulletsPool;
-    [SerializeField] private int _maxEnemiesPool;
-    [SerializeField] Bullet _bulletPlayerPrefab;
-    [SerializeField] Bullet _bulletEnemyPrefab;
+    [Header("ENEMY POOL CONFIG")]
     [SerializeField] GameObject _enemyChaserPrefab;
     [SerializeField] GameObject _enemyShooterPrefab;
     [SerializeField] GameObject _parentEnemyPool;
+    [SerializeField] private int _maxEnemiesPool;
+
+    [Header("ENEMY BULLET POOL CONFIG")]
+    [SerializeField] private int _maxEnemiesBulletsPool;
+    [SerializeField] Bullet _bulletEnemyPrefab;
     [SerializeField] GameObject _parentEnemyBulletsPool;
+
+    [Header("PLAYER BULLET POOL CONFIG")]
+    [SerializeField] private int _maxPlayersBulletsPool;
+    [SerializeField] Bullet _bulletPlayerPrefab;
+    [SerializeField] GameObject _parentPlayerBulletsPool;
+
+    [HideInInspector] public List<Bullet> allPlayerBullets;
+    [HideInInspector] public List<Bullet> desactivePlayerBullets;
+
+    [HideInInspector] public List<Bullet> allEnemyBullets;
+    [HideInInspector] public List<Bullet> desactiveEnemyBullets;
+
+    [HideInInspector] public List<GameObject> allEnemiesChaser;
+    [HideInInspector] public List<GameObject> desactiveEnemyChaser;
+
+    [HideInInspector] public List<GameObject> allEnemiesShooter;
+    [HideInInspector] public List<GameObject> desactiveEnemyShooter;
 
     public void DoShootPlayer(Vector3 position, Quaternion rotation)
     {
-        if(allPlayerBullets.Count < _maxBulletsPool)
+        if(allPlayerBullets.Count < _maxPlayersBulletsPool)
         {
-            Bullet bullet = Instantiate(_bulletPlayerPrefab, position, rotation, transform);
+            Bullet bullet = Instantiate(_bulletPlayerPrefab, position, rotation, _parentPlayerBulletsPool.transform);
             bullet.Setup(this);
             allPlayerBullets.Add(bullet);
         }
@@ -47,7 +54,7 @@ public class PoolManager : MonoBehaviour
 
     public void DoShootEnemy(Vector3 position, Quaternion rotation)
     {
-        if (allEnemyBullets.Count < _maxBulletsPool)
+        if (allEnemyBullets.Count < _maxEnemiesBulletsPool)
         {
             Bullet bullet = Instantiate(_bulletEnemyPrefab, position, rotation, _parentEnemyBulletsPool.transform);
             bullet.Setup(this);

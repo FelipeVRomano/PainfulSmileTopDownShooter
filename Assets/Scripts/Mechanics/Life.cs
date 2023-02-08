@@ -13,20 +13,32 @@ public class Life : MonoBehaviour
     }
 
     [Header("CHARACTER LIFE INFO")]
-    [SerializeField] private int _life;
+    [Range(2,10)] [SerializeField] private int _life;
     [SerializeField] CharacterType _characterType;
     [SerializeField] Image _lifeBarImage;
+    [SerializeField] GameObject _deathAnimObj;
 
-    int _lifeBase;
+    [Header("CHARACTER HEALTH STATE")]
+    [SerializeField] Sprite _fullHealthImg;
+    [SerializeField] List<LifeSpriteDamage> _lifeSpriteDamage;
+    [SerializeField] GameObject _fireEffectObj;
+
+    SpriteRenderer _spriteRenderer;
     PoolManager _poolManager;
-    GameController _gmController;
+
+    private int _lifeBase;
+    private bool _characterIsDead;
+
+    public System.Action CharacterDeath;
+    public int ActualLife => _life;
 
     private void Start()
     {
-        if(_characterType == CharacterType.EnemyChaser || _characterType == CharacterType.EnemyShooter)
-        _poolManager = FindObjectOfType<PoolManager>();
-        _gmController = FindObjectOfType<GameController>();
+        if (_characterType == CharacterType.EnemyChaser || _characterType == CharacterType.EnemyShooter)
+            _poolManager = FindObjectOfType<PoolManager>();
 
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+        _spriteRenderer.sprite = _fullHealthImg;
         _lifeBase = _life;
     }
 
@@ -40,29 +52,75 @@ public class Life : MonoBehaviour
         {
             DoCharacterDeath();
         }
+        else
+        {
+            DoCharacterSpriteChange();
+        }
+    }
+
+    void DoCharacterSpriteChange()
+    {
+        int getCurrentIndex = _life;
+        int indexOfSprite = 0;
+        bool needToChangeSprite = false;
+
+        for(int i = 0; i < _lifeSpriteDamage.Count; i++)
+        {
+            if(_lifeSpriteDamage[i].spriteLifeIndex >= getCurrentIndex)
+            {
+                if(Mathf.Min(getCurrentIndex, _lifeSpriteDamage[i].spriteLifeIndex) == _lifeSpriteDamage[i].spriteLifeIndex)
+                {
+                    Debug.Log("CHANGED CURRENT NEW INDEX: " + _lifeSpriteDamage[i].spriteLifeIndex);
+                    getCurrentIndex = _lifeSpriteDamage[i].spriteLifeIndex;
+                    indexOfSprite = i;
+                    needToChangeSprite = true;
+                }
+            }
+        }
+
+        Debug.Log("NEED TO CHANGE SPRITE: " + needToChangeSprite);
+        if (needToChangeSprite)
+        {
+            _spriteRenderer.sprite = _lifeSpriteDamage[indexOfSprite].spriteLifeImage;
+        }
+
+        if(_life == 1)
+        {
+            _fireEffectObj.SetActive(true);
+        }   
     }
 
     void DoCharacterDeath()
     {
-        switch (_characterType)
+        StartCoroutine(ExecuteCharacterDeath(.5f, _characterType));
+    }
+
+    IEnumerator ExecuteCharacterDeath(float waitTime, CharacterType characterType)
+    {
+        _deathAnimObj.SetActive(true);
+
+        CharacterDeath?.Invoke();
+
+        yield return new WaitForSeconds(waitTime);
+
+        if (characterType == CharacterType.Player)
         {
-            case CharacterType.EnemyChaser:
-                _poolManager.desactiveEnemyChaser.Add(gameObject);
-                _gmController.AddScore();
-                _life = _lifeBase;
-                _lifeBarImage.fillAmount = (float)_life / _lifeBase;
-                gameObject.SetActive(false);
-                break;
-            case CharacterType.EnemyShooter:
-                _poolManager.desactiveEnemyChaser.Add(gameObject);
-                _gmController.AddScore();
-                _life = _lifeBase;
-                _lifeBarImage.fillAmount = (float)_life / _lifeBase;
-                gameObject.SetActive(false);
-                break;
-            case CharacterType.Player:
-                _gmController.PlayerDied();
-                break;
+            GameController.gmController.PlayerDied();
+        }
+
+        _deathAnimObj.SetActive(false);
+        _fireEffectObj.SetActive(false);
+        _spriteRenderer.sprite = _fullHealthImg;
+
+        if (_characterType == CharacterType.EnemyChaser || _characterType == CharacterType.EnemyShooter)
+        {
+            if(_characterType == CharacterType.EnemyChaser) _poolManager.desactiveEnemyChaser.Add(gameObject);
+            else _poolManager.desactiveEnemyChaser.Add(gameObject);
+            GameController.gmController.AddScore();
+            _life = _lifeBase;
+            _lifeBarImage.fillAmount = (float)_life / _lifeBase;
+
+            gameObject.SetActive(false);
         }
     }
 }

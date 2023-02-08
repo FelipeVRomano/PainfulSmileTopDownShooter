@@ -19,7 +19,7 @@ public class Pathfinding : MonoBehaviour
         _targetPos = FindObjectOfType<Player>().transform;
     }
 
-    void FixedUpdate()
+    void LateUpdate()
     {
         FindPath(_start.position, _targetPos.position);
     }

@@ -3,30 +3,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShooterManager : MonoBehaviour, IGameOver
+public class ShooterManager : MonoBehaviour, IStopAction
 {
+    [Header("PLAYER SHOOTER MANAGER")]
     [SerializeField] Transform _frontalShoot;
     [SerializeField] List<Transform> _sideShoot;
-    [SerializeField] float _cooldownShotFrontal;
-    [SerializeField] float _cooldownComboSide;
+    [Range(1, 5)] [SerializeField] float _cooldownShotFrontal;
+    [Range(3, 6)] [SerializeField] float _cooldownComboSide;
+
+    private PoolManager _bulletManager;
+    private Life _playerLife;
 
     private float _cooldownComboSideBase;
     private float _cooldownShotFrontalBase;
-    private PoolManager _bulletManager;
-    private GameController _gmController;
     private bool _gameOver;
-    
+   
     private void Start()
     {
         _bulletManager = FindObjectOfType<PoolManager>();
-        _gmController = FindObjectOfType<GameController>();
+        _playerLife = GetComponent<Life>();
 
-        _gmController.GameOver += GameOver;
+        _playerLife.CharacterDeath += CharacterDeath;
+        GameController.gmController.GameOver += GameOver;
     }
 
     private void OnDestroy()
     {
-        _gmController.GameOver -= GameOver;
+        _playerLife.CharacterDeath -= CharacterDeath;
+        GameController.gmController.GameOver -= GameOver;
     }
 
     private void Update()
@@ -90,6 +94,11 @@ public class ShooterManager : MonoBehaviour, IGameOver
     }
 
     public void GameOver()
+    {
+        _gameOver = true;
+    }
+
+    public void CharacterDeath()
     {
         _gameOver = true;
     }

@@ -5,11 +5,15 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    [SerializeField] float _launchForce = 5f;
+    [Header("BULLET CONFIG")]
+    [Range(4, 8)] [SerializeField] float _launchForce = 5f;
     [SerializeField] float _lifeTime = 5;
+    [SerializeField] float _explosionTime = .5f;
+    [SerializeField] GameObject _explosionObj;
 
     private float _lifeTimeBase;
     private PoolManager _bulletManager;
+    private bool _stopMovement;
 
     public void Setup(PoolManager bulletManager)
     {
@@ -19,6 +23,9 @@ public class Bullet : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (_stopMovement)
+            return;
+
         Shoot();
         CooldownBullet();
     }
@@ -33,28 +40,32 @@ public class Bullet : MonoBehaviour
     {
         _lifeTimeBase -= Time.deltaTime;
 
-        if(_lifeTimeBase <= 0)
+        if (_lifeTimeBase <= 0)
         {
             DisableBullet();
         }
     }
 
-    void OnTriggerEnter2D(Collider2D collision)
-    {
-        Life damageable = collision.GetComponent<Life>();
-        if (damageable != null)
-        {
-            damageable.TakeDamage(1);
-            DisableBullet();
-            return;
-        }
-    }
+    //void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if (_stopMovement)
+    //        return;
+
+    //    Life damageable = collision.GetComponent<Life>();
+    //    if (damageable != null)
+    //    {
+    //        damageable.TakeDamage(1);
+    //        _stopMovement = true;
+    //        StartCoroutine(ExecuteExplosion());
+    //        return;
+    //    }
+    //}
 
     void DisableBullet()
     {
         _lifeTimeBase = _lifeTime;
 
-        switch(gameObject.tag)
+        switch (gameObject.tag)
         {
             case "BulletEnemy":
                 _bulletManager.desactiveEnemyBullets.Add(this);
@@ -63,9 +74,28 @@ public class Bullet : MonoBehaviour
                 _bulletManager.desactivePlayerBullets.Add(this);
                 break;
             default:
-                Debug.LogError("NOT ASSIGNED BULLET TAG");
+                Debug.LogWarning("NOT ASSIGNED BULLET TAG");
                 break;
         }
-       gameObject.SetActive(false);
+        _stopMovement = false;
+        gameObject.SetActive(false);
+    }
+
+    public void StartExplosion()
+    {
+        if (_stopMovement)
+            return;
+
+        _stopMovement = true;
+        StartCoroutine(ExecuteExplosion());
+    }
+
+    private IEnumerator ExecuteExplosion()
+    {
+        _explosionObj.SetActive(true);
+        yield return new WaitForSeconds(_explosionTime);
+        _explosionObj.SetActive(false);
+
+        DisableBullet();
     }
 }

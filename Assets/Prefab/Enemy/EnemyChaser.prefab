@@ -76,12 +76,51 @@ PrefabInstance:
       value: 
       objectReference: {fileID: -2014665058, guid: 1e74e2bda97882e4182077267b5eba9e, type: 3}
     - target: {fileID: 8356243886261014586, guid: 7cb8f4288866c5c4db908ba0e7e318de, type: 3}
+      propertyPath: _life
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8356243886261014586, guid: 7cb8f4288866c5c4db908ba0e7e318de, type: 3}
       propertyPath: _lifeBarImage
       value: 
       objectReference: {fileID: 5583147177083973668}
+    - target: {fileID: 8356243886261014586, guid: 7cb8f4288866c5c4db908ba0e7e318de, type: 3}
+      propertyPath: _fullHealthImg
+      value: 
+      objectReference: {fileID: -2014665058, guid: 1e74e2bda97882e4182077267b5eba9e, type: 3}
+    - target: {fileID: 8356243886261014586, guid: 7cb8f4288866c5c4db908ba0e7e318de, type: 3}
+      propertyPath: _lifeSpriteDamage.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8356243886261014586, guid: 7cb8f4288866c5c4db908ba0e7e318de, type: 3}
+      propertyPath: _lifeSpriteDamage.Array.data[0].spriteLifeImage
+      value: 
+      objectReference: {fileID: -334400755, guid: 1e74e2bda97882e4182077267b5eba9e, type: 3}
+    - target: {fileID: 8356243886261014586, guid: 7cb8f4288866c5c4db908ba0e7e318de, type: 3}
+      propertyPath: _lifeSpriteDamage.Array.data[0].spriteLifeIndex
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1482332703857077270, guid: 7cb8f4288866c5c4db908ba0e7e318de, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 7cb8f4288866c5c4db908ba0e7e318de, type: 3}
+--- !u!1 &161643919112178518 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7508620852501327080, guid: 7cb8f4288866c5c4db908ba0e7e318de, type: 3}
+  m_PrefabInstance: {fileID: 7641971588306708414}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2220134945084425781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 161643919112178518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c330ab7bdaf68143b635d122bd83154, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _damage: 2
+  _damageType: 1
 --- !u!114 &5583147177083973668 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2843722368436049818, guid: 7cb8f4288866c5c4db908ba0e7e318de, type: 3}

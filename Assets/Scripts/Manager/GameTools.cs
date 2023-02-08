@@ -5,10 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class GameTools : MonoBehaviour
 {
-    private void Start()
-    {
-        //ResetPlayerPrefs();
-    }
+#if UNITY_EDITOR
+    //private void Start() => ResetPlayerPrefs();
+#endif
 
     public void ResetPlayerPrefs()
     {

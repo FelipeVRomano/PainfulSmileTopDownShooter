@@ -3,30 +3,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour, IGameOver
+public class Player : MonoBehaviour, IStopAction
 {
     [Header("PLAYER SPEED")]
-    [SerializeField] private float _moveSpeed;
-    [SerializeField] float _rotateSpeed;
+    [Range(.5f, 5f)] [SerializeField] private float _moveSpeed = 2.5f;
+    [Range(20, 50)] [SerializeField] float _rotateSpeed = 40;
 
+    private Life _playerLife;
     private float _moveForward, _rotatePlayer;
-    [SerializeField] private Vector2 _mapLimitStart, _mapLimitEnd;
-    private GameController _gmController;
+    private Vector2 _mapLimitStart, _mapLimitEnd;
+    private bool _gameOver;
 
-    bool _gameOver;
     void Start()
     {
-        _gmController = FindObjectOfType<GameController>();
+        _playerLife = GetComponent<Life>();
 
-        _mapLimitStart = _gmController.MapBoundsStart;
-        _mapLimitEnd = _gmController.MapBoundsEnd;
-
-        _gmController.GameOver += GameOver;
+        _playerLife.CharacterDeath += CharacterDeath;
+        _mapLimitStart = GameController.gmController.MapBoundsStart;
+        _mapLimitEnd = GameController.gmController.MapBoundsEnd;
+        GameController.gmController.GameOver += GameOver;
     }
 
     private void OnDestroy()
     {
-        _gmController.GameOver -= GameOver;
+        _playerLife.CharacterDeath -= CharacterDeath;
+        GameController.gmController.GameOver -= GameOver;
     }
 
     void Update()
@@ -71,18 +72,14 @@ public class Player : MonoBehaviour, IGameOver
         transform.Rotate(rotatePlayer * -10);
     }
 
-    public void GameOver()
+    public void CharacterDeath()
     {
         _gameOver = true;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    public void GameOver()
     {
-        Life damageable = collision.gameObject.GetComponent<Life>();
-        if (damageable != null)
-        {
-            damageable.TakeDamage(2);
-            return;
-        }
+        gameObject.SetActive(false);
     }
+
 }

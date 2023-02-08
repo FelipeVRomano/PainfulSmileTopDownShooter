@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyMovement : MonoBehaviour, IGameOver
+public class EnemyMovement : MonoBehaviour, IStopAction
 {
     enum EnemyType
     {
@@ -11,7 +11,6 @@ public class EnemyMovement : MonoBehaviour, IGameOver
     }
 
     [Header("ENEMY CONTROLLER")]
-    [SerializeField] private EnemyType _enemyType;
     [Range(.5f, 5)]
     [SerializeField] private float _movementSpeed;
     [Range(.5f, 5)]
@@ -19,13 +18,15 @@ public class EnemyMovement : MonoBehaviour, IGameOver
     [Range(0, 5)] [Tooltip("Add value to avoid enemy trying to get inside player")]
     [SerializeField] private float _stopDistance = 1;
 
-    private Vector3 _moveForward;
     private Pathfinding _pathfinding;
-    private Vector3 _pathTarget;
     private Transform _player;
-    private GameController _gmController;
+    private Life _lifeManager;
+    private Vector3 _moveForward;
+    private Vector3 _pathTarget;
+
     private bool _playerIsClose;
     private bool _gameOver;
+    private bool _characterIsDead;
 
     public bool PlayerIsClose => _playerIsClose;
 
@@ -37,18 +38,26 @@ public class EnemyMovement : MonoBehaviour, IGameOver
     void Start()
     {
         _player = _pathfinding.TargetPos;
-        _gmController = FindObjectOfType<GameController>();
-        _gmController.GameOver += GameOver;
+        _lifeManager = GetComponent<Life>();
+
+        _lifeManager.CharacterDeath += CharacterDeath;
+        GameController.gmController.GameOver += GameOver;
     }
 
     private void OnDestroy()
     {
-        _gmController.GameOver -= GameOver;
+        _lifeManager.CharacterDeath -= CharacterDeath;
+        GameController.gmController.GameOver -= GameOver;
+    }
+
+    private void OnEnable()
+    {
+        _characterIsDead = false;
     }
 
     void Update()
     {
-        if (_gameOver)
+        if (_gameOver || _characterIsDead)
             return;
 
         if (!HasPathToGo())
@@ -93,19 +102,14 @@ public class EnemyMovement : MonoBehaviour, IGameOver
         transform.localPosition = newPosition;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        Life damageable = collision.gameObject.GetComponent<Life>();
-        if (damageable != null)
-        {
-            damageable.TakeDamage(2);
-            return;
-        }
-    }
-
     public void GameOver()
     {
         _gameOver = true;
+    }
+
+    public void CharacterDeath()
+    {
+        _characterIsDead = true;
     }
 }
 
