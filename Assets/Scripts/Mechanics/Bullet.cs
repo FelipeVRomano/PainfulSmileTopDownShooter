@@ -7,13 +7,19 @@ public class Bullet : MonoBehaviour
 {
     [Header("BULLET CONFIG")]
     [Range(4, 8)] [SerializeField] float _launchForce = 5f;
-    [SerializeField] float _lifeTime = 5;
-    [SerializeField] float _explosionTime = .5f;
+    [Range(1, 5)] [SerializeField] float _lifeTime = 5;
+    [Range(0.1f, 0.5f)] [SerializeField] float _explosionTime = .5f;
     [SerializeField] GameObject _explosionObj;
 
     private float _lifeTimeBase;
     private PoolManager _bulletManager;
+    private SpriteRenderer _spriteRenderer;
     private bool _stopMovement;
+
+    private void Start()
+    {
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+    }
 
     public void Setup(PoolManager bulletManager)
     {
@@ -46,21 +52,6 @@ public class Bullet : MonoBehaviour
         }
     }
 
-    //void OnTriggerEnter2D(Collider2D collision)
-    //{
-    //    if (_stopMovement)
-    //        return;
-
-    //    Life damageable = collision.GetComponent<Life>();
-    //    if (damageable != null)
-    //    {
-    //        damageable.TakeDamage(1);
-    //        _stopMovement = true;
-    //        StartCoroutine(ExecuteExplosion());
-    //        return;
-    //    }
-    //}
-
     void DisableBullet()
     {
         _lifeTimeBase = _lifeTime;
@@ -81,19 +72,22 @@ public class Bullet : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void StartExplosion()
+    public void StartExplosion(Vector3 explosionPos)
     {
         if (_stopMovement)
             return;
 
         _stopMovement = true;
-        StartCoroutine(ExecuteExplosion());
+        StartCoroutine(ExecuteExplosion(explosionPos));
     }
 
-    private IEnumerator ExecuteExplosion()
+    private IEnumerator ExecuteExplosion(Vector3 explosionPos)
     {
         _explosionObj.SetActive(true);
+        _explosionObj.transform.position = explosionPos;
+        _spriteRenderer.enabled = false;
         yield return new WaitForSeconds(_explosionTime);
+        _spriteRenderer.enabled = true;
         _explosionObj.SetActive(false);
 
         DisableBullet();

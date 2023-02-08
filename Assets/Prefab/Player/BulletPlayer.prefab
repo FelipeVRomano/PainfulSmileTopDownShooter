@@ -103,7 +103,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _launchForce: 7
   _lifeTime: 4
-  _explosionTime: 0.5
+  _explosionTime: 0.3
   _explosionObj: {fileID: 5336889030741718251}
 --- !u!50 &7883328570683706697
 Rigidbody2D:

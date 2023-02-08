@@ -24,7 +24,7 @@ public class Damage : MonoBehaviour
             if (_damageType == DamageType.Bullet)
             {
                 Bullet myBullet = gameObject.GetComponent<Bullet>();
-                myBullet.StartExplosion();
+                myBullet.StartExplosion(collision.gameObject.transform.position);
             }
         }
     }
